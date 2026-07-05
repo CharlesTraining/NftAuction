@@ -1,0 +1,80 @@
+# ============ 默认 profile: 日常开发 ============
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+
+# 锁定编译器版本, 避免每次编译版本浮动导致字节码不一致
+solc = "0.8.30"
+evm_version = "cancun"
+
+# 优化器: runs 表示"预估每个函数被调用次数"
+# 200 是开发常用折中值 (部署成本 vs 运行成本)
+optimizer = true
+optimizer_runs = 200
+
+# 编译产物里嵌入元数据 hash, 影响合约验证; 开发阶段保留默认 ipfs
+bytecode_hash = "ipfs"
+
+# 测试默认 verbosity, 出错时多打点日志
+verbosity = 2
+
+# ============ 生产部署 profile ============
+# 用法: FOUNDRY_PROFILE=production forge build
+[profile.production]
+solc = "0.8.30"
+evm_version = "cancun"
+optimizer = true
+# 生产合约长期高频调用, 拉满优化降低运行 gas
+optimizer_runs = 1000000
+# 去掉元数据 hash, 让相同源码编译出确定字节码, 便于多链验证
+bytecode_hash = "none"
+# 复杂合约可开 via_ir 获得更优代码 (编译变慢), 需要时取消下行注释
+# via_ir = true
+
+# ============ CI profile ============
+# 用法: FOUNDRY_PROFILE=ci forge test
+[profile.ci]
+verbosity = 4
+fuzz = { runs = 10000 }
+invariant = { runs = 1000 }
+
+# ============ 模糊测试 ============
+[fuzz]
+runs = 256                  # 每个 fuzz 用例随机跑多少次
+max_test_rejects = 65536    # 输入被 vm.assume 拒绝的上限
+
+# ============ 不变量测试 ============
+[invariant]
+runs = 256                  # 跑多少轮
+depth = 128                 # 每轮调用多少次函数
+fail_on_revert = false      # revert 不直接算失败
+
+# ============ RPC 端点 (Alchemy) ============
+# key 走环境变量, 不写死; 复制 .env.example 为 .env 填入
+[rpc_endpoints]
+mainnet = "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+sepolia = "https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+arbitrum = "https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+optimism = "https://opt-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+base = "https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+polygon = "https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+
+# ============ 合约验证 (Etherscan) ============
+# 各链的浏览器 API key, 同样走环境变量
+[etherscan]
+mainnet = { key = "${ETHERSCAN_API_KEY}" }
+sepolia = { key = "${ETHERSCAN_API_KEY}" }
+arbitrum = { key = "${ARBISCAN_API_KEY}", chain = 42161 }
+optimism = { key = "${OPTIMISTIC_ETHERSCAN_API_KEY}", chain = 10 }
+base = { key = "${BASESCAN_API_KEY}", chain = 8453 }
+polygon = { key = "${POLYGONSCAN_API_KEY}", chain = 137 }
+
+# ============ 代码格式化 (forge fmt) ============
+[fmt]
+line_length = 120           # 单行最大字符数
+tab_width = 4
+bracket_spacing = true      # { foo } 而非 {foo}
+int_types = "long"          # 用 uint256 而非 uint
+quote_style = "double"      # 双引号
+number_underscore = "thousands"  # 大数字加千分位下划线
