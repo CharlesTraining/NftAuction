@@ -23,4 +23,6 @@ docs/
 !.env.example
 lib/
 
+.agents/
+.codex/
 AGENTS.md

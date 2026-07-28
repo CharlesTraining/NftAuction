@@ -67,12 +67,12 @@ interface IAuctionFactory {
     /**
      * @dev 出价事件
      */
-    event NewBid(address indexed bidder, uint256 amount);
+    event NewBid(uint256 indexed auctionId, address indexed bidder, uint256 amount);
 
     /**
      * @dev 拍卖结束事件
      */
-    event AuctionEnded(address winner, uint256 winningBid);
+    event AuctionEnded(uint256 indexed auctionId, address winner, uint256 winningBid);
 
     /**
      * @dev 提取出价事件

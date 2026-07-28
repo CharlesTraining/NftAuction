@@ -198,7 +198,7 @@ contract AuctionFactory is IAuctionFactory, Initializable, OwnableUpgradeable, U
             _sendETH(payable(previousBidder), previousBid);
         }
 
-        emit NewBid(msg.sender, msg.value);
+        emit NewBid(auctionId, msg.sender, msg.value);
     }
 
     /**
@@ -233,7 +233,7 @@ contract AuctionFactory is IAuctionFactory, Initializable, OwnableUpgradeable, U
             token.safeTransfer(previousBidder, previousBid);
         }
 
-        emit NewBid(msg.sender, amount);
+        emit NewBid(auctionId, msg.sender, amount);
     }
 
     /**
@@ -291,7 +291,7 @@ contract AuctionFactory is IAuctionFactory, Initializable, OwnableUpgradeable, U
             IERC721(auction.nftContract).safeTransferFrom(address(this), seller, auction.tokenId);
         }
 
-        emit AuctionEnded(winner, winningBid);
+        emit AuctionEnded(auctionId, winner, winningBid);
     }
 
     /**
