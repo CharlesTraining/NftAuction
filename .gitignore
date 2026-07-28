@@ -21,7 +21,7 @@ docs/
 .env
 .env.*
 !.env.example
-lib/
+lib/*
 
 .agents/
 .codex/
